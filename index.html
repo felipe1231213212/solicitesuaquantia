@@ -5,8 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="monetag" content="d9671c0f4393ff97a4002bbcbaf6a05e">
 <title>Solicite Sua Quantia Aqui</title>
-<!-- Monetag In-Page Push (so notificacao, nao sequestra clique) -->
-<script>(function(s){s.dataset.zone='11053244',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+<!-- Monetag In-Page Push REMOVIDO: aparecia como popup central "Click Allow" -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -435,7 +434,8 @@
 <script>
 (function(){
   // Sandbox SEM allow-top-navigation = ad fica preso dentro do iframe, nao consegue forcar redirect da pagina pai
-  const SANDBOX = 'allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-forms';
+  // SEM allow-same-origin = origem null no iframe, melhora compatibilidade com Adsterra
+  const SANDBOX = 'allow-scripts allow-popups allow-popups-to-escape-sandbox allow-forms';
 
   function buildBannerHTML(w,h,key){
     return `<!DOCTYPE html><html><head><meta charset="utf-8"><style>html,body{margin:0;padding:0;background:transparent;overflow:hidden}</style></head><body>
@@ -467,6 +467,7 @@
 
   const tracked = []; // pra rotacao
 
+  let countB=0, countN=0;
   document.querySelectorAll('.ad-host[data-ad="banner"]').forEach(host=>{
     const w = parseInt(host.dataset.w,10);
     const h = parseInt(host.dataset.h,10);
@@ -475,17 +476,20 @@
     const html = buildBannerHTML(w,h,k);
     mountIframe(host, html, w, h);
     tracked.push({host, type:'banner', html, w, h});
+    countB++;
   });
 
   document.querySelectorAll('.ad-host[data-ad="native"]').forEach(host=>{
     const html = buildNativeHTML();
-    // Native usa altura flex; iframe 100% do host
     host.style.minHeight = '260px';
     const ifr = mountIframe(host, html, null, null);
     ifr.style.height = '100%';
     ifr.style.minHeight = '260px';
     tracked.push({host, type:'native', html, w:null, h:null});
+    countN++;
   });
+
+  console.log('[ads] injected:', countB, 'banners +', countN, 'native. Anti-redirect sandbox ativo:', SANDBOX);
 
   // Rotacao: recria srcdoc a cada 60s = novo ad servido
   setInterval(()=>{
