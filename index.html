@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solicite Sua Quantia Aqui</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#eef3f8;
+    --branco:#ffffff;
+    --esm:#0f9d58;
+    --esm2:#0b7d45;
+    --esm-soft:#e8f6ee;
+    --azul:#1652f0;
+    --azul-escuro:#0c2340;
+    --txt:#16222e;
+    --txt2:#5b6b7b;
+    --borda:#e4eaf1;
+    --borda-2:#eef2f7;
+    --sombra:0 18px 50px rgba(20,40,70,.07);
+    --sombra-hover:0 26px 60px rgba(20,40,70,.12);
+    --radius:24px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Manrope',sans-serif;color:var(--txt);background:var(--bg);min-height:100vh;
+    -webkit-font-smoothing:antialiased;position:relative;overflow-x:hidden;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background:
+      radial-gradient(900px 520px at 15% -8%, rgba(15,157,88,.10), transparent 55%),
+      radial-gradient(800px 520px at 92% 4%, rgba(22,82,240,.07), transparent 55%),
+      linear-gradient(180deg,#eef3f8,#f4f7fb 50%,#eef3f8);
+  }
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+  .reveal{opacity:0;animation:fadeUp .75s cubic-bezier(.2,.7,.2,1) forwards}
+  .d1{animation-delay:.05s}.d2{animation-delay:.15s}.d3{animation-delay:.25s}
+
+  svg.ic{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+
+  /* TOPO */
+  .topbar{background:var(--azul-escuro);color:#cfe0f5;font-size:13px;text-align:center;padding:9px 16px;
+    letter-spacing:.2px;display:flex;gap:8px;align-items:center;justify-content:center}
+  .topbar strong{color:#fff}
+  .topbar svg{width:15px;height:15px;color:#7fe3b0}
+
+  header.site{padding:16px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
+    position:sticky;top:0;z-index:50;background:rgba(255,255,255,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--borda)}
+  .logo{display:flex;align-items:center;gap:11px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:21px;letter-spacing:-.5px;color:var(--azul-escuro)}
+  .logo .mark{width:40px;height:40px;border-radius:12px;background:linear-gradient(145deg,var(--esm),var(--esm2));
+    display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:800;
+    box-shadow:0 8px 20px rgba(15,157,88,.35),inset 0 1px 2px rgba(255,255,255,.5)}
+  .logo .g{color:var(--esm)}
+  .selos{display:flex;align-items:center;gap:20px;font-size:13px;color:var(--txt2);font-weight:600}
+  .selos span{display:flex;align-items:center;gap:6px}
+  .selos svg{width:15px;height:15px;color:var(--esm)}
+
+  /* LAYOUT */
+  .layout{display:grid;grid-template-columns:190px 1fr 190px;gap:26px;max-width:1360px;margin:0 auto;padding:34px 24px 70px;align-items:start}
+  .ad-coluna{display:flex;flex-direction:column;gap:22px}
+  .ad{border:1.5px dashed #cbd6e2;background:repeating-linear-gradient(45deg,#fbfcfe,#fbfcfe 10px,#f3f6fa 10px,#f3f6fa 20px);
+    border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+    color:#9aa9b8;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+  .ad small{display:block;font-weight:500;letter-spacing:.5px;text-transform:none;margin-top:4px;font-size:11px;opacity:.8}
+  .ad-vertical{min-height:600px}
+  .ad-quadrado{min-height:260px}
+  .ad-horizontal{min-height:96px;margin:0 auto;max-width:728px;width:100%}
+  .ad-slot{display:flex;flex-direction:column;gap:12px}
+  .ad-1x1{aspect-ratio:1/1;width:100%}
+  .ad-mobile{display:none}
+
+  .miolo{display:flex;flex-direction:column;gap:26px;min-width:0}
+  .card{background:var(--branco);border:1px solid var(--borda);border-radius:var(--radius);box-shadow:var(--sombra);overflow:hidden}
+
+  /* HERO */
+  .hero{padding:50px 44px 42px;text-align:center;position:relative}
+  .badge-topo{display:inline-flex;align-items:center;gap:8px;background:var(--esm-soft);color:var(--esm2);
+    border:1px solid #c4ebd5;font-weight:700;font-size:13px;padding:7px 15px;border-radius:999px;margin-bottom:26px}
+  .badge-topo .ponto{width:8px;height:8px;border-radius:50%;background:var(--esm);box-shadow:0 0 0 0 rgba(15,157,88,.6);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(15,157,88,.5)}70%{box-shadow:0 0 0 12px rgba(15,157,88,0)}100%{box-shadow:0 0 0 0 rgba(15,157,88,0)}}
+
+  /* SELO 3D (no lugar da moeda) - escudo de segurança com profundidade */
+  .selo3d{width:118px;height:118px;margin:0 auto 26px;position:relative;animation:flutua 4s ease-in-out infinite}
+  @keyframes flutua{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+  .selo3d .disco{position:absolute;inset:0;border-radius:50%;
+    background:radial-gradient(circle at 35% 28%,#3ad189,var(--esm) 55%,var(--esm2) 100%);
+    box-shadow:0 22px 38px rgba(15,157,88,.4),inset 0 3px 6px rgba(255,255,255,.5),inset 0 -8px 14px rgba(7,80,48,.4);
+    display:flex;align-items:center;justify-content:center}
+  .selo3d .disco svg{width:54px;height:54px;color:#fff;stroke-width:2.2;filter:drop-shadow(0 2px 3px rgba(0,0,0,.2))}
+  .selo3d .anel{position:absolute;inset:-9px;border-radius:50%;border:2px dashed rgba(15,157,88,.3);animation:gira 14s linear infinite}
+  @keyframes gira{to{transform:rotate(360deg)}}
+
+  h1{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(34px,5.5vw,54px);line-height:1.05;
+    letter-spacing:-1.5px;margin-bottom:16px;color:var(--azul-escuro)}
+  h1 .destaque{background:linear-gradient(120deg,var(--esm),var(--esm2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .subtitulo{font-size:17px;color:var(--txt2);max-width:500px;margin:0 auto;line-height:1.6}
+
+  .contador-box{margin:30px auto 0;max-width:470px;background:linear-gradient(135deg,#fffaf0,#fff4dd);
+    border:1px solid #ffe2a8;border-radius:18px;padding:18px 22px;display:flex;align-items:center;gap:16px;justify-content:center}
+  .contador-icone{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:#fff0cf;color:#c9870d}
+  .contador-icone svg{width:22px;height:22px}
+  .contador-texto{text-align:left}
+  .contador-texto .label{font-size:12px;color:#a9790f;font-weight:700;text-transform:uppercase;letter-spacing:.6px}
+  .contador-valor{font-family:'Bricolage Grotesque',sans-serif;font-size:30px;font-weight:800;color:#9c6c08;line-height:1.1}
+  .contador-valor::before{content:"R$ "}
+  .barra-prog{height:6px;background:#ffe2a8;border-radius:99px;margin-top:8px;overflow:hidden}
+  .barra-prog span{display:block;height:100%;background:linear-gradient(90deg,#f5b942,#e0a93f);width:62%;border-radius:99px;transition:width .8s ease}
+
+  /* FORM */
+  .form-area{padding:6px 44px 46px}
+  .form-box{background:#f8fafc;border:1px solid var(--borda);border-radius:20px;padding:30px;max-width:470px;margin:0 auto}
+  .form-label{display:block;font-weight:700;font-size:15px;color:var(--azul-escuro);margin-bottom:12px}
+  .input-wrap{display:flex;align-items:center;background:#fff;border:1.5px solid var(--borda);border-radius:15px;overflow:hidden;transition:border-color .2s,box-shadow .2s}
+  .input-wrap:focus-within{border-color:var(--esm);box-shadow:0 0 0 4px rgba(15,157,88,.14)}
+  .input-prefixo{padding:0 17px;font-weight:800;font-size:20px;color:var(--esm2);border-right:1px solid var(--borda);align-self:stretch;display:flex;align-items:center;background:#f1faf5}
+  .input-wrap input{flex:1;border:none;outline:none;font-size:25px;font-weight:700;color:var(--txt);padding:17px 18px;font-family:'Bricolage Grotesque',sans-serif;background:transparent;width:100%}
+  .input-wrap input::placeholder{color:#aebccb;font-weight:600}
+  .sugestoes{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;justify-content:center}
+  .sug{border:1px solid var(--borda);background:#fff;border-radius:999px;padding:9px 17px;font-size:14px;font-weight:700;color:var(--txt2);cursor:pointer;transition:all .15s}
+  .sug:hover{border-color:var(--esm);color:var(--esm2);background:var(--esm-soft)}
+  .btn{position:relative;width:100%;margin-top:24px;background:linear-gradient(135deg,var(--esm),var(--esm2));color:#fff;border:none;border-radius:15px;
+    padding:19px;font-size:18px;font-weight:800;font-family:'Bricolage Grotesque',sans-serif;letter-spacing:.2px;cursor:pointer;overflow:hidden;
+    box-shadow:0 14px 30px rgba(15,157,88,.32),inset 0 1px 2px rgba(255,255,255,.4);transition:transform .12s,box-shadow .2s;
+    display:flex;align-items:center;justify-content:center;gap:10px}
+  .btn svg{width:20px;height:20px;stroke-width:2.5}
+  .btn::after{content:"";position:absolute;top:0;left:-120%;width:60%;height:100%;background:linear-gradient(110deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-18deg);animation:shine 3.4s infinite}
+  @keyframes shine{0%{left:-120%}55%,100%{left:160%}}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 20px 40px rgba(15,157,88,.42),inset 0 1px 2px rgba(255,255,255,.4)}
+  .btn:active{transform:translateY(0)}
+  .form-rodape{text-align:center;font-size:13px;color:var(--txt2);margin-top:16px;display:flex;align-items:center;justify-content:center;gap:7px}
+  .form-rodape svg{width:14px;height:14px;color:var(--esm)}
+
+  /* STATS */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--borda-2);border-bottom:1px solid var(--borda-2);background:#fbfdfe}
+  .stat{padding:26px 16px;text-align:center;border-right:1px solid var(--borda-2)}
+  .stat:last-child{border-right:none}
+  .stat .ic-wrap{color:var(--esm);margin-bottom:8px}
+  .stat .ic-wrap svg{width:22px;height:22px}
+  .stat .n{font-family:'Bricolage Grotesque',sans-serif;font-size:27px;font-weight:800;color:var(--azul-escuro)}
+  .stat .l{font-size:13px;color:var(--txt2);font-weight:600;margin-top:2px}
+
+  .avaliacao{padding:28px 40px;text-align:center}
+  .estrelas{display:inline-flex;gap:3px;color:#f5b942}
+  .estrelas svg{width:24px;height:24px;fill:#f5b942;stroke:none}
+  .nota{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;color:var(--azul-escuro);font-size:18px;margin-top:8px}
+  .nota span{color:var(--txt2);font-weight:600;font-size:14px}
+
+  /* COMO FUNCIONA */
+  .explica{padding:8px 44px 48px;max-width:720px;margin:0 auto;text-align:center}
+  .explica h2{font-family:'Bricolage Grotesque',sans-serif;font-size:27px;margin-bottom:14px;letter-spacing:-.5px;color:var(--azul-escuro)}
+  .explica p{color:var(--txt2);font-size:16px;line-height:1.7}
+  .explica strong{color:var(--esm2)}
+  .passos{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:34px}
+  .passo{background:#fff;border:1px solid var(--borda);border-radius:18px;padding:26px 18px;text-align:center;transition:transform .2s,box-shadow .2s,border-color .2s}
+  .passo:hover{transform:translateY(-4px);box-shadow:var(--sombra-hover);border-color:#c4ebd5}
+  .passo .ringue{width:54px;height:54px;border-radius:16px;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(145deg,#eafaf1,#d6f3e2);color:var(--esm2);box-shadow:inset 0 1px 2px rgba(255,255,255,.6)}
+  .passo .ringue svg{width:24px;height:24px}
+  .passo h3{font-size:16px;color:var(--azul-escuro);margin-bottom:6px;font-weight:700}
+  .passo p{font-size:13.5px;color:var(--txt2);line-height:1.55}
+
+  /* FAQ */
+  .faq{padding:8px 44px 50px;max-width:720px;margin:0 auto}
+  .faq h2{font-family:'Bricolage Grotesque',sans-serif;font-size:27px;margin-bottom:20px;text-align:center;letter-spacing:-.5px;color:var(--azul-escuro)}
+  .faq-item{border:1px solid var(--borda);border-radius:14px;margin-bottom:11px;overflow:hidden;background:#fff;transition:border-color .2s,box-shadow .2s}
+  .faq-item[open]{border-color:#c4ebd5;box-shadow:var(--sombra)}
+  .faq-item summary{padding:17px 20px;font-weight:700;color:var(--azul-escuro);cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;font-size:15px;gap:12px}
+  .faq-item summary::-webkit-details-marker{display:none}
+  .faq-item summary .mais{color:var(--esm);transition:transform .25s;flex-shrink:0}
+  .faq-item summary .mais svg{width:20px;height:20px}
+  .faq-item[open] summary .mais{transform:rotate(45deg)}
+  .faq-item .resp{padding:0 20px 17px;color:var(--txt2);font-size:14px;line-height:1.65}
+
+  /* COMENTÁRIOS FB */
+  .fb{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif}
+  .fb-head{display:flex;align-items:center;justify-content:space-between;padding:6px 0 16px;border-bottom:1px solid var(--borda-2);margin-bottom:8px}
+  .fb-head .titulo{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:20px;color:var(--azul-escuro);display:flex;align-items:center;gap:9px}
+  .fb-head .titulo svg{width:22px;height:22px;color:var(--esm)}
+  .fb-head .ordenar{font-size:13px;color:var(--txt2);font-weight:600;cursor:pointer}
+  .fb-reacoes{display:flex;align-items:center;gap:9px;font-size:14px;color:var(--txt2);padding:8px 0 16px}
+  .fb-reacoes .icones{display:flex}
+  .fb-reacoes .ri{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;margin-left:-5px;border:2px solid #fff}
+  .fb-reacoes .ri:first-child{margin-left:0}
+  .fb-reacoes strong{color:var(--txt)}
+  .fb-escrever{display:flex;gap:10px;align-items:center;padding:4px 0 18px}
+  .fb-escrever img{width:40px;height:40px;border-radius:50%;flex-shrink:0;background:#eef2f7}
+  .fb-escrever .campo{flex:1;background:#f0f2f5;border-radius:18px;padding:11px 16px;color:#65676b;font-size:14px}
+  .fb-com{display:flex;gap:10px;padding:10px 0;align-items:flex-start}
+  .fb-com img.av{width:40px;height:40px;border-radius:50%;flex-shrink:0;background:#eef2f7}
+  .fb-com .corpo{flex:1;min-width:0}
+  .fb-com .balao{background:#f0f2f5;border-radius:16px;padding:9px 15px;display:inline-block;max-width:100%}
+  .fb-com .nome{font-weight:700;font-size:13.5px;color:#050505;display:flex;align-items:center;gap:5px}
+  .fb-com .nome .selo{color:var(--esm);display:inline-flex}
+  .fb-com .nome .selo svg{width:14px;height:14px}
+  .fb-com .texto{font-size:14px;color:#050505;line-height:1.45;margin-top:1px}
+  .fb-com .acoes{display:flex;gap:15px;padding:5px 15px 0;font-size:12.5px;color:#65676b;font-weight:700;align-items:center}
+  .fb-com .acoes span{cursor:pointer}
+  .fb-com .acoes .like.curtido{color:var(--esm)}
+  .fb-com .acoes .tempo{font-weight:500}
+  .fb-com .likes{margin-left:auto;display:flex;align-items:center;gap:4px;font-weight:500;color:#65676b}
+  .fb-com .likes .thumb,.fb-com .likes .heart{width:17px;height:17px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:9px;border:1.5px solid #fff}
+  .fb-com .likes .thumb{background:#1877f2;color:#fff;margin-right:-7px;z-index:1}
+  .fb-com .likes .heart{background:#f33e58;color:#fff}
+  .fb-respostas{margin-left:50px;border-left:2px solid var(--borda);padding-left:4px}
+  .fb-ver-mais{color:#65676b;font-weight:700;font-size:14px;cursor:pointer;padding:12px 0 4px;margin-left:50px}
+
+  footer{text-align:center;padding:40px 24px;color:#9aa9b8;font-size:13px;line-height:1.7;border-top:1px solid var(--borda)}
+  footer .selos-rodape{display:flex;gap:22px;justify-content:center;margin-bottom:16px;flex-wrap:wrap;color:var(--txt2);font-weight:600}
+  footer .selos-rodape span{display:flex;align-items:center;gap:6px}
+  footer .selos-rodape svg{width:15px;height:15px;color:var(--esm)}
+
+  @media(max-width:1000px){
+    .layout{grid-template-columns:1fr}
+    .ad-coluna{display:none}
+    .ad-mobile{display:flex}
+  }
+  @media(max-width:560px){
+    .hero,.form-area,.explica,.faq,.avaliacao{padding-left:22px;padding-right:22px}
+    .form-box{padding:24px 18px}
+    .passos{grid-template-columns:1fr}
+    .stats{grid-template-columns:1fr}
+    .stat{border-right:none;border-bottom:1px solid var(--borda-2)}
+    .contador-box{flex-direction:column;text-align:center}
+    .contador-texto{text-align:center}
+    .fb-respostas{margin-left:20px}.fb-ver-mais{margin-left:0}
+    .selos{display:none}
+    .ad-horizontal{min-height:110px}
+  }
+</style>
+</head>
+<body>
+
+  <svg width="0" height="0" style="position:absolute">
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+    <symbol id="i-zap" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+    <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-badge" viewBox="0 0 24 24"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+    <symbol id="i-msg" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></symbol>
+    <symbol id="i-trend" viewBox="0 0 24 24"><path d="m22 7-8.5 8.5-5-5L2 17"/><path d="M16 7h6v6"/></symbol>
+    <symbol id="i-pen" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></symbol>
+    <symbol id="i-cursor" viewBox="0 0 24 24"><path d="m3 3 7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/></symbol>
+    <symbol id="i-coins" viewBox="0 0 24 24"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/></symbol>
+  </svg>
+
+  <div class="topbar">
+    <svg class="ic" viewBox="0 0 24 24"><use href="#i-lock"/></svg>
+    Ambiente <strong>100% seguro e protegido</strong> &nbsp;•&nbsp; Solicitação rápida e sem complicação
+  </div>
+
+  <header class="site">
+    <div class="logo"><span class="mark">$</span>Solicita<span class="g">Já</span></div>
+    <div class="selos">
+      <span><svg class="ic" viewBox="0 0 24 24"><use href="#i-badge"/></svg> Verificado</span>
+      <span><svg class="ic" viewBox="0 0 24 24"><use href="#i-lock"/></svg> Criptografado</span>
+      <span><svg class="ic" viewBox="0 0 24 24"><use href="#i-zap"/></svg> Resposta na hora</span>
+    </div>
+  </header>
+
+  <div class="layout">
+
+    <!-- ANÚNCIO LATERAL ESQUERDO: cada .ad-slot aceita barra 160x600 OU 3-4 quadrados 1x1 -->
+    <aside class="ad-coluna">
+      <div class="ad-slot"><div class="ad ad-vertical">ESPAÇO PUBLICITÁRIO<small>160 x 600 (barra)</small></div></div>
+      <div class="ad-slot">
+        <div class="ad ad-1x1">AD 1x1<small>quadrado</small></div>
+        <div class="ad ad-1x1">AD 1x1<small>quadrado</small></div>
+        <div class="ad ad-1x1">AD 1x1<small>quadrado</small></div>
+      </div>
+      <div class="ad-slot"><div class="ad ad-vertical">ESPAÇO PUBLICITÁRIO<small>160 x 600 (barra)</small></div></div>
+      <div class="ad-slot">
+        <div class="ad ad-1x1">AD 1x1<small>quadrado</small></div>
+        <div class="ad ad-1x1">AD 1x1<small>quadrado</small></div>
+        <div class="ad ad-1x1">AD 1x1<small>quadrado</small></div>
+        <div class="ad ad-1x1">AD 1x1<small>quadrado</small></div>
+      </div>
+      <div class="ad-slot"><div class="ad ad-vertical">ESPAÇO PUBLICITÁRIO<small>160 x 600 (barra)</small></div></div>
+    </aside>
+
+    <main class="miolo">
+
+      <div class="ad ad-horizontal reveal d1">ESPAÇO PUBLICITÁRIO &nbsp;—&nbsp; 728 x 90</div>
+
+      <section class="card reveal d2">
+        <div class="hero">
+          <span class="badge-topo"><span class="ponto"></span> Disponível agora</span>
+
+          <h1>SOLICITE SUA <span class="destaque">QUANTIA AQUI</span></h1>
+          <p class="subtitulo">Informe o valor que você precisa, confirme em um clique e receba a resposta na mesma hora.</p>
+
+          <div class="contador-box">
+            <div class="contador-icone"><svg class="ic" viewBox="0 0 24 24"><use href="#i-clock"/></svg></div>
+            <div class="contador-texto">
+              <div class="label">Valor ainda disponível hoje</div>
+              <div class="contador-valor" id="contador">15.847,00</div>
+              <div class="barra-prog"><span id="barra"></span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-area">
+          <div class="form-box">
+            <label class="form-label" for="valor">Digite a quantidade que deseja solicitar:</label>
+            <div class="input-wrap">
+              <span class="input-prefixo">R$</span>
+              <input type="text" id="valor" inputmode="numeric" placeholder="0,00" autocomplete="off">
+            </div>
+            <div class="sugestoes">
+              <button class="sug" type="button" onclick="setValor('100,00')">R$ 100</button>
+              <button class="sug" type="button" onclick="setValor('250,00')">R$ 250</button>
+              <button class="sug" type="button" onclick="setValor('500,00')">R$ 500</button>
+              <button class="sug" type="button" onclick="setValor('1.000,00')">R$ 1.000</button>
+            </div>
+            <button class="btn" type="button" onclick="solicitar()">RECEBER AGORA <svg class="ic" viewBox="0 0 24 24"><use href="#i-arrow"/></svg></button>
+            <div class="form-rodape"><svg class="ic" viewBox="0 0 24 24"><use href="#i-lock"/></svg> Sua solicitação é confidencial e protegida</div>
+          </div>
+        </div>
+
+        <div class="ad ad-quadrado ad-mobile" style="margin:0 22px 10px">ANÚNCIO<small>300 x 250 (mobile)</small></div>
+
+        <div class="stats">
+          <div class="stat"><div class="ic-wrap"><svg class="ic" viewBox="0 0 24 24"><use href="#i-check-circle"/></svg></div><div class="n" id="stat1">128.439</div><div class="l">Solicitações concluídas</div></div>
+          <div class="stat"><div class="ic-wrap"><svg class="ic" viewBox="0 0 24 24"><use href="#i-star"/></svg></div><div class="n">4.9/5</div><div class="l">Avaliação dos usuários</div></div>
+          <div class="stat"><div class="ic-wrap"><svg class="ic" viewBox="0 0 24 24"><use href="#i-trend"/></svg></div><div class="n">98,7%</div><div class="l">Taxa de aprovação</div></div>
+        </div>
+
+        <div class="avaliacao">
+          <div class="estrelas">
+            <svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg>
+            <svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg>
+            <svg viewBox="0 0 24 24"><use href="#i-star"/></svg>
+          </div>
+          <div class="nota">4.9 de 5 <span>— baseado em 12.347 avaliações</span></div>
+        </div>
+
+        <div class="explica">
+          <h2>Como funciona?</h2>
+          <p>É bem simples: <strong>digite o valor</strong> que você deseja no campo acima e clique no botão <strong>"RECEBER AGORA"</strong>. Em poucos segundos sua solicitação é processada e você recebe a resposta na hora, sem burocracia e sem complicação.</p>
+          <div class="passos">
+            <div class="passo"><div class="ringue"><svg class="ic" viewBox="0 0 24 24"><use href="#i-pen"/></svg></div><h3>1. Digite o valor</h3><p>Informe quanto você precisa no campo acima.</p></div>
+            <div class="passo"><div class="ringue"><svg class="ic" viewBox="0 0 24 24"><use href="#i-cursor"/></svg></div><h3>2. Clique no botão</h3><p>Aperte em "Receber Agora" para confirmar.</p></div>
+            <div class="passo"><div class="ringue"><svg class="ic" viewBox="0 0 24 24"><use href="#i-coins"/></svg></div><h3>3. Receba na hora</h3><p>Pronto! Sua solicitação cai na hora.</p></div>
+          </div>
+        </div>
+
+        <div class="ad ad-quadrado ad-mobile" style="margin:8px 22px">ANÚNCIO<small>300 x 250 (mobile)</small></div>
+
+        <div class="faq">
+          <h2>Perguntas frequentes</h2>
+          <details class="faq-item" open><summary>É seguro fazer a solicitação? <span class="mais"><svg class="ic" viewBox="0 0 24 24"><use href="#i-plus"/></svg></span></summary><div class="resp">Sim. Todo o ambiente é protegido com criptografia e seus dados ficam confidenciais do início ao fim.</div></details>
+          <details class="faq-item"><summary>Quanto tempo demora? <span class="mais"><svg class="ic" viewBox="0 0 24 24"><use href="#i-plus"/></svg></span></summary><div class="resp">É na hora. Você digita o valor, clica no botão e recebe a resposta em poucos segundos.</div></details>
+          <details class="faq-item"><summary>Preciso pagar alguma coisa pra solicitar? <span class="mais"><svg class="ic" viewBox="0 0 24 24"><use href="#i-plus"/></svg></span></summary><div class="resp">Não. A solicitação é totalmente gratuita e sem nenhum compromisso.</div></details>
+          <details class="faq-item"><summary>Quais valores posso solicitar? <span class="mais"><svg class="ic" viewBox="0 0 24 24"><use href="#i-plus"/></svg></span></summary><div class="resp">Você escolhe o valor livremente no campo, ou usa um dos atalhos rápidos disponíveis acima.</div></details>
+        </div>
+      </section>
+
+      <div class="ad ad-horizontal">ESPAÇO PUBLICITÁRIO &nbsp;—&nbsp; 728 x 90</div>
+
+      <section class="card" style="padding:24px 30px 30px">
+        <div class="fb">
+          <div class="fb-head">
+            <div class="titulo"><svg class="ic" viewBox="0 0 24 24"><use href="#i-msg"/></svg> Comentários</div>
+            <div class="ordenar">Mais relevantes ▾</div>
+          </div>
+          <div class="fb-reacoes">
+            <div class="icones"><span class="ri" style="background:#1877f2">👍</span><span class="ri" style="background:#f33e58">❤</span><span class="ri" style="background:#f7b125">😍</span></div>
+            <span><strong>2,4 mil</strong> pessoas comentaram</span>
+          </div>
+          <div class="fb-escrever"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Voce&backgroundColor=b6e3f4"><div class="campo">Escreva um comentário...</div></div>
+          <div id="lista-comentarios"></div>
+          <div class="fb-ver-mais" onclick="this.style.display='none'">Ver mais comentários</div>
+        </div>
+      </section>
+
+      <div class="ad ad-horizontal">ESPAÇO PUBLICITÁRIO &nbsp;—&nbsp; 728 x 90</div>
+      <div class="ad ad-quadrado ad-mobile">ANÚNCIO<small>300 x 250 (mobile)</small></div>
+
+    </main>
+
+    <!-- ANÚNCIO LATERAL DIREITO -->
+    <aside class="ad-coluna">
+      <div class="ad-slot"><div class="ad ad-vertical">ESPAÇO PUBLICITÁRIO<small>160 x 600 (barra)</small></div></div>
+      <div class="ad-slot">
+        <div class="ad ad-1x1">AD 1x1<small>quadrado</small></div>
+        <div class="ad ad-1x1">AD 1x1<small>quadrado</small></div>
+        <div class="ad ad-1x1">AD 1x1<small>quadrado</small></div>
+      </div>
+      <div class="ad-slot"><div class="ad ad-vertical">ESPAÇO PUBLICITÁRIO<small>160 x 600 (barra)</small></div></div>
+      <div class="ad-slot">
+        <div class="ad ad-1x1">AD 1x1<small>quadrado</small></div>
+        <div class="ad ad-1x1">AD 1x1<small>quadrado</small></div>
+        <div class="ad ad-1x1">AD 1x1<small>quadrado</small></div>
+        <div class="ad ad-1x1">AD 1x1<small>quadrado</small></div>
+      </div>
+      <div class="ad-slot"><div class="ad ad-vertical">ESPAÇO PUBLICITÁRIO<small>160 x 600 (barra)</small></div></div>
+    </aside>
+
+  </div>
+
+  <footer>
+    <div class="selos-rodape">
+      <span><svg class="ic" viewBox="0 0 24 24"><use href="#i-lock"/></svg> SSL Seguro</span>
+      <span><svg class="ic" viewBox="0 0 24 24"><use href="#i-badge"/></svg> Site Verificado</span>
+      <span><svg class="ic" viewBox="0 0 24 24"><use href="#i-shield"/></svg> Dados Protegidos</span>
+      <span><svg class="ic" viewBox="0 0 24 24"><use href="#i-star"/></svg> 4.9/5 de avaliação</span>
+    </div>
+    © 2026 SolicitaJá — Todos os direitos reservados.<br>
+    Este é um ambiente de demonstração. Leia os termos de uso antes de prosseguir.
+  </footer>
+
+<script>
+  let disponivel=15847.00, minimo=8200.00, baseTotal=25000;
+  const cEl=document.getElementById('contador'), bEl=document.getElementById('barra');
+  const fmt=v=>v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  function tick(){
+    if(disponivel>minimo){disponivel-=(Math.random()*38+4);if(disponivel<minimo)disponivel=minimo;
+      cEl.textContent=fmt(disponivel);bEl.style.width=Math.max(8,(disponivel/baseTotal)*100)+'%';}
+    setTimeout(tick,Math.random()*2200+800);
+  }
+  bEl.style.width=((disponivel/baseTotal)*100)+'%'; tick();
+  let sol=128439; const s1=document.getElementById('stat1');
+  setInterval(()=>{sol+=Math.floor(Math.random()*3)+1;s1.textContent=sol.toLocaleString('pt-BR');},4000);
+
+  function setValor(v){const e=document.getElementById('valor');e.value=v;e.focus();}
+  function solicitar(){
+    const c=document.getElementById('valor'),v=c.value.trim();
+    if(!v){c.focus();c.parentElement.style.borderColor='#f87171';c.placeholder='Digite um valor primeiro!';return;}
+    const b=document.querySelector('.btn');
+    b.innerHTML='✓ SOLICITAÇÃO ENVIADA!';b.style.background='linear-gradient(135deg,#0b7d45,#0a6b3a)';
+    setTimeout(()=>{alert('Solicitação de R$ '+v+' recebida com sucesso! Em breve você terá uma resposta.');
+      b.innerHTML='RECEBER AGORA <svg class="ic" viewBox="0 0 24 24" style="width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';b.style.background='';},700);
+  }
+  document.getElementById('valor').addEventListener('input',function(e){
+    let v=e.target.value.replace(/\D/g,'');if(!v){e.target.value='';return;}
+    v=(parseInt(v)/100).toFixed(2)+'';v=v.replace('.',',');v=v.replace(/\B(?=(\d{3})+(?!\d))/g,'.');e.target.value=v;
+  });
+
+  const SELO='<svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>';
+  const comentarios=[
+    {nome:"Carla Mendes",seed:"Carla",bg:"ffd5dc",tempo:"há 2 h",likes:342,texto:"Gente eu não acreditei mas funcionou mesmo! Super rápido 😍",curtido:true,resposta:{nome:"SolicitaJá",seed:"Logo",bg:"d1f4d9",tempo:"há 1 h",likes:58,texto:"Que bom que deu certo, Carla! 💚",verif:true}},
+    {nome:"Roberto Alves",seed:"Roberto",bg:"b6e3f4",tempo:"há 4 h",likes:127,texto:"Tava com o pé atrás mas resolvi testar. Tudo certo, recomendo!",curtido:false},
+    {nome:"Patrícia Souza",seed:"Patricia",bg:"c0aede",tempo:"há 5 h",likes:89,texto:"Achei o site bem organizado e sério. Deu confiança 👏",curtido:false},
+    {nome:"Marcos Vinícius",seed:"Marcos",bg:"ffdfbf",tempo:"há 7 h",likes:64,texto:"Fiz aqui e foi na hora mesmo, sem enrolação. Top demais",curtido:true},
+    {nome:"Juliana Ferreira",seed:"Juliana",bg:"ffd5dc",tempo:"há 9 h",likes:201,texto:"Já indiquei pra toda minha família kkkk valeu mesmo 🙏",curtido:false,resposta:{nome:"Bruno T.",seed:"Bruno",bg:"b6e3f4",tempo:"há 8 h",likes:12,texto:"Vou testar então, obrigado pela dica!"}},
+    {nome:"Anderson Lima",seed:"Anderson",bg:"d1f4d9",tempo:"há 11 h",likes:43,texto:"Simples e direto, do jeito que tem que ser. Aprovado ✓",curtido:false},
+  ];
+  function comHTML(c){
+    return `<div class="fb-com">
+      <img class="av" src="https://api.dicebear.com/7.x/avataaars/svg?seed=${c.seed}&backgroundColor=${c.bg}">
+      <div class="corpo">
+        <div class="balao"><div class="nome">${c.nome} ${c.verif?'<span class="selo">'+SELO+'</span>':''}</div><div class="texto">${c.texto}</div></div>
+        <div class="acoes">
+          <span class="like ${c.curtido?'curtido':''}" onclick="toggleLike(this)">Curtir</span>
+          <span>Responder</span><span class="tempo">${c.tempo}</span>
+          <span class="likes"><span class="thumb">👍</span><span class="heart">❤</span> ${c.likes}</span>
+        </div>
+      </div></div>`;
+  }
+  const lista=document.getElementById('lista-comentarios');
+  comentarios.forEach(c=>{let h=comHTML(c);if(c.resposta)h+=`<div class="fb-respostas">${comHTML(c.resposta)}</div>`;lista.insertAdjacentHTML('beforeend',h);});
+  function toggleLike(el){
+    const linha=el.closest('.acoes').querySelector('.likes');
+    let n=parseInt(linha.textContent.replace(/\D/g,''))||0;
+    const ic=linha.innerHTML.replace(/[\d\.\s]+$/,'');
+    if(el.classList.contains('curtido')){el.classList.remove('curtido');n--;}else{el.classList.add('curtido');n++;}
+    linha.innerHTML=ic+' '+n.toLocaleString('pt-BR');
+  }
+</script>
+</body>
+</html>
