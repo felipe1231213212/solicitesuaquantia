@@ -524,9 +524,10 @@
     const c=document.getElementById('valor'),v=c.value.trim();
     if(!v){c.focus();c.parentElement.style.borderColor='#f87171';c.placeholder='Digite um valor primeiro!';return;}
     const b=document.querySelector('.btn');
-    b.innerHTML='✓ SOLICITAÇÃO ENVIADA!';b.style.background='linear-gradient(135deg,#0b7d45,#0a6b3a)';
-    setTimeout(()=>{alert('Solicitação de R$ '+v+' recebida com sucesso! Em breve você terá uma resposta.');
-      b.innerHTML='RECEBER AGORA <svg class="ic" viewBox="0 0 24 24" style="width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';b.style.background='';},700);
+    b.innerHTML='✓ PROCESSANDO...';b.style.background='linear-gradient(135deg,#0b7d45,#0a6b3a)';
+    setTimeout(()=>{
+      window.location.href = 'obrigado.html?valor=' + encodeURIComponent(v);
+    }, 700);
   }
   document.getElementById('valor').addEventListener('input',function(e){
     let v=e.target.value.replace(/\D/g,'');if(!v){e.target.value='';return;}
