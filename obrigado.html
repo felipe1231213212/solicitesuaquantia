@@ -355,32 +355,18 @@
     Este é um ambiente de demonstração. Leia os termos de uso antes de prosseguir.
   </footer>
 
-<!-- ========== AD INJECTOR (mesmo do index.html: iframe sandbox anti-redirect) ========== -->
+<!-- ========== AD INJECTOR (iframe src=/ads/*.html same-origin + sandbox anti-redirect) ========== -->
 <script>
 (function(){
   const SANDBOX = 'allow-scripts allow-popups allow-popups-to-escape-sandbox allow-forms';
 
-  function buildBannerHTML(w,h,key){
-    return `<!DOCTYPE html><html><head><meta charset="utf-8"><style>html,body{margin:0;padding:0;background:transparent;overflow:hidden}</style></head><body>
-<script type="text/javascript">
-  atOptions = { 'key':'${key}', 'format':'iframe', 'height':${h}, 'width':${w}, 'params':{} };
-<\/script>
-<script type="text/javascript" src="https://www.highperformanceformat.com/${key}/invoke.js"><\/script>
-</body></html>`;
-  }
-  function buildNativeHTML(){
-    return `<!DOCTYPE html><html><head><meta charset="utf-8"><style>html,body{margin:0;padding:0;background:transparent;font-family:-apple-system,Segoe UI,Roboto,sans-serif}</style></head><body>
-<script async="async" data-cfasync="false" src="https://pl29543996.effectivecpmnetwork.com/8e76b0f7f7a9a124cbf583e52232bc05/invoke.js"><\/script>
-<div id="container-8e76b0f7f7a9a124cbf583e52232bc05"></div>
-</body></html>`;
-  }
-  function mountIframe(host, html, w, h){
+  function mountIframe(host, src, w, h){
     const ifr = document.createElement('iframe');
     ifr.setAttribute('sandbox', SANDBOX);
     ifr.setAttribute('scrolling','no');
     ifr.setAttribute('frameborder','0');
     ifr.style.cssText = `border:0;display:block;width:${w?w+'px':'100%'};height:${h?h+'px':'100%'};max-width:100%;`;
-    ifr.srcdoc = html;
+    ifr.src = src;
     host.innerHTML = '';
     host.appendChild(ifr);
     return ifr;
@@ -388,19 +374,19 @@
 
   const tracked = [];
   let countB=0, countN=0;
+
   document.querySelectorAll('.ad-host[data-ad="banner"]').forEach(host=>{
-    const w = parseInt(host.dataset.w,10), h = parseInt(host.dataset.h,10), k = host.dataset.key;
-    if(!w||!h||!k) return;
-    const html = buildBannerHTML(w,h,k);
-    mountIframe(host, html, w, h);
-    tracked.push({host, html, w, h}); countB++;
+    const w = parseInt(host.dataset.w,10), h = parseInt(host.dataset.h,10);
+    if(!w||!h) return;
+    const src = `/ads/banner-${w}x${h}.html`;
+    mountIframe(host, src, w, h);
+    tracked.push({host, src, w, h}); countB++;
   });
   document.querySelectorAll('.ad-host[data-ad="native"]').forEach(host=>{
-    const html = buildNativeHTML();
     host.style.minHeight = '260px';
-    const ifr = mountIframe(host, html, null, null);
+    const ifr = mountIframe(host, '/ads/native.html', null, null);
     ifr.style.height = '100%'; ifr.style.minHeight = '260px';
-    tracked.push({host, html, w:null, h:null}); countN++;
+    tracked.push({host, src:'/ads/native.html', w:null, h:null}); countN++;
   });
   console.log('[ads obrigado] injected:', countB, 'banners +', countN, 'native.');
 
@@ -409,7 +395,7 @@
       if(!document.body.contains(t.host)) return;
       const ifr = t.host.querySelector('iframe');
       if(!ifr) return;
-      ifr.srcdoc = t.html;
+      ifr.src = t.src + '?t=' + Date.now();
     });
   }, 60000);
 })();
